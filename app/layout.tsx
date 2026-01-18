@@ -14,6 +14,8 @@ const inter = Inter({
 })
 const _geistMono = Geist_Mono({ subsets: ["latin"] })
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://bayareatimes.news"
+
 export const metadata: Metadata = {
   title: "Bay Area Times - Independent Journalism for the Bay Area",
   description: "Your trusted source for Bay Area news, tech, business, politics, culture, and lifestyle coverage.",
@@ -39,6 +41,23 @@ export const metadata: Metadata = {
       },
     ],
     apple: "/apple-icon.png",
+  },
+  openGraph: {
+    title: "Bay Area Times - Independent Journalism for the Bay Area",
+    description: "Your trusted source for Bay Area news, tech, business, politics, culture, and lifestyle coverage.",
+    url: siteUrl,
+    siteName: "Bay Area Times",
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Bay Area Times - Independent Journalism for the Bay Area",
+    description: "Your trusted source for Bay Area news, tech, business, politics, culture, and lifestyle coverage.",
+    creator: "@bayareatimes",
+  },
+  alternates: {
+    canonical: siteUrl,
   },
 }
 

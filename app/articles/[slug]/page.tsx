@@ -3,6 +3,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { Clock, Download } from "lucide-react"
 import type React from "react"
+import type { Metadata } from "next"
 import { getArticleBySlug } from "../../articles"
 import { getArticleContent } from "@/lib/article-content"
 
@@ -10,6 +11,60 @@ interface ArticlePageProps {
   params: Promise<{
     slug: string
   }>
+}
+
+export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
+  const { slug } = await params
+  const article = getArticleBySlug(slug)
+
+  if (!article) {
+    return {
+      title: "Article Not Found - Bay Area Times",
+    }
+  }
+
+  // Use environment variable or default to production URL
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://bayareatimes.news"
+  // Ensure image URL is absolute
+  const imageUrl = article.imagePath.startsWith('http') 
+    ? article.imagePath 
+    : `${siteUrl}${article.imagePath}`
+  const articleUrl = `${siteUrl}/articles/${slug}`
+
+  return {
+    title: `${article.title} - Bay Area Times`,
+    description: article.dek,
+    authors: [{ name: article.byline }],
+    openGraph: {
+      title: article.title,
+      description: article.dek,
+      url: articleUrl,
+      siteName: "Bay Area Times",
+      images: [
+        {
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+          alt: article.title,
+        },
+      ],
+      locale: "en_US",
+      type: "article",
+      publishedTime: article.date,
+      authors: [article.byline],
+      section: article.category,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: article.title,
+      description: article.dek,
+      images: [imageUrl],
+      creator: "@bayareatimes",
+    },
+    alternates: {
+      canonical: articleUrl,
+    },
+  }
 }
 
 function renderMarkdown(content: string) {
